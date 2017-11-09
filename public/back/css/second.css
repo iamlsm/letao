@@ -1,0 +1,10 @@
+.lt-slide .nav ul li .child{
+    display: block;
+}
+/* 设置高亮 */
+.lt-slide .nav ul li:nth-child(2) .fenlei,
+.lt-slide .nav ul li:nth-child(2) .child .second{
+    color: #fff;
+}
+
+
