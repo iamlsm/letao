@@ -6,3 +6,10 @@
 .lt-slide .nav ul li:nth-child(2) .child .first{
     color: #fff;
 }
+.text-right{
+    text-align: right;
+}
+.lt-main table td{
+    vertical-align: middle;
+    text-align: center;
+}
