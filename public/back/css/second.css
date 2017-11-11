@@ -6,5 +6,16 @@
 .lt-slide .nav ul li:nth-child(2) .child .second{
     color: #fff;
 }
+.text-right{
+    text-align: right;
+}
+.lt-main table td{
+    vertical-align: middle;
+    text-align: center;
+}
 
-
+#uploadFile{
+    position: absolute;
+    top:114px;
+    opacity: 0;
+}
