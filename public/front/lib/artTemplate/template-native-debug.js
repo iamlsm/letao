@@ -335,7 +335,6 @@ var SPLIT_RE = /[^\w$]+/g;
 var KEYWORDS_RE = new RegExp(["\\b" + KEYWORDS.replace(/,/g, '\\b|\\b') + "\\b"].join('|'), 'g');
 var NUMBER_RE = /^\d[^,]*|,\d[^,]*/g;
 var BOUNDARY_RE = /^,+|,+$/g;
-var SPLIT2_RE = /^$|,+/;
 
 
 // 获取变量
@@ -346,7 +345,7 @@ function getVariable (code) {
     .replace(KEYWORDS_RE, '')
     .replace(NUMBER_RE, '')
     .replace(BOUNDARY_RE, '')
-    .split(SPLIT2_RE);
+    .split(/^$|,+/);
 };
 
 
@@ -474,7 +473,7 @@ function compiler (source, options) {
         if (compress) {
             code = code
             .replace(/\s+/g, ' ')
-            .replace(/<!--[\w\W]*?-->/g, '');
+            .replace(/<!--.*?-->/g, '');
         }
         
         if (code) {

@@ -335,7 +335,6 @@ var SPLIT_RE = /[^\w$]+/g;
 var KEYWORDS_RE = new RegExp(["\\b" + KEYWORDS.replace(/,/g, '\\b|\\b') + "\\b"].join('|'), 'g');
 var NUMBER_RE = /^\d[^,]*|,\d[^,]*/g;
 var BOUNDARY_RE = /^,+|,+$/g;
-var SPLIT2_RE = /^$|,+/;
 
 
 // 获取变量
@@ -346,7 +345,7 @@ function getVariable (code) {
     .replace(KEYWORDS_RE, '')
     .replace(NUMBER_RE, '')
     .replace(BOUNDARY_RE, '')
-    .split(SPLIT2_RE);
+    .split(/^$|,+/);
 };
 
 
@@ -474,7 +473,7 @@ function compiler (source, options) {
         if (compress) {
             code = code
             .replace(/\s+/g, ' ')
-            .replace(/<!--[\w\W]*?-->/g, '');
+            .replace(/<!--.*?-->/g, '');
         }
         
         if (code) {
@@ -608,20 +607,11 @@ var filtered = function (js, filter) {
 
 
 defaults.parser = function (code, options) {
-
-    // var match = code.match(/([\w\$]*)(\b.*)/);
-    // var key = match[1];
-    // var args = match[2];
-    // var split = args.split(' ');
-    // split.shift();
-
     code = code.replace(/^\s/, '');
-
+    
     var split = code.split(' ');
     var key = split.shift();
     var args = split.join(' ');
-
-    
 
     switch (key) {
 
@@ -683,10 +673,9 @@ defaults.parser = function (code, options) {
             // 过滤器（辅助方法）
             // {{value | filterA:'abcd' | filterB}}
             // >>> $helpers.filterB($helpers.filterA(value, 'abcd'))
-            // TODO: {{ddd||aaa}} 不包含空格
-            if (/^\s*\|\s*[\w\$]/.test(args)) {
+            if (args.indexOf('|') !== -1) {
 
-                var escape = true;
+                var escape = options.escape;
 
                 // {{#value | link}}
                 if (code.indexOf('#') === 0) {
@@ -697,13 +686,14 @@ defaults.parser = function (code, options) {
                 var i = 0;
                 var array = code.split('|');
                 var len = array.length;
-                var val = array[i++];
+                var pre = escape ? '$escape' : '$string';
+                var val = pre + '(' + array[i++] + ')';
 
                 for (; i < len; i ++) {
                     val = filtered(val, array[i]);
                 }
 
-                code = (escape ? '=' : '=#') + val;
+                code = '=#' + val;
 
             // 即将弃用 {{helperName value}}
             } else if (template.helpers[key]) {

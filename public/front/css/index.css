@@ -1,0 +1,7 @@
+.lt_content .nav{
+    padding: 10px;
+}
+.lt_content .nav ul li img {
+    width: 33.33%;
+    float: left;
+}
